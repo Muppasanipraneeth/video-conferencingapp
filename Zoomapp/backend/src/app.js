@@ -6,10 +6,11 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { createServer } from "node:http";
 import {connectTosoc} from "./controllers/socketManager.js";
+import userRoutes from "./routes/users.routes.js";
 dotenv.config();
 
 const app = express();
-app.use(express.json({limit:"40kb"}));
+app.use(express.json());
 app.use(urlencoded({extended:true,limit:"40kb"}));
 const server = createServer(app);
 const io=connectTosoc(server);
@@ -22,6 +23,7 @@ app.get("/home", (req, res) => {
   res.send("Hello, this is home");
 });
 
+app.use("/api/v1/user",userRoutes);
 const run = async () => {
   try {
     const mongodbcon = await mongoose.connect(app.get("MONGOURL"), {});
